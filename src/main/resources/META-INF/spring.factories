@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.pm.springfireauth.config.FirebaseConfig,\
+    com.pm.springfireauth.config.SecurityConfig
