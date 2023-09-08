@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.security.auth.Subject;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FireAuthToken extends AbstractAuthenticationToken {
@@ -13,6 +14,7 @@ public class FireAuthToken extends AbstractAuthenticationToken {
     private final String accessToken;
 
     private FirebaseToken firebaseToken;
+
 
     public FireAuthToken(String accessToken, FirebaseToken firebaseToken, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
@@ -36,9 +38,14 @@ public class FireAuthToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        String userName = firebaseToken.getName();
-        if (userName == null || userName.isBlank()) return firebaseToken.getEmail();
-        return firebaseToken.getName();
+        Map<String,String> authMap = new HashMap<>();
+        authMap.put("name", firebaseToken.getName());
+        authMap.put("email", firebaseToken.getName());
+        authMap.put("uid", firebaseToken.getUid());
+//        String userName = firebaseToken.getName();
+//        if (userName == null || userName.isBlank()) return firebaseToken.getEmail();
+//        return firebaseToken.getName();
+        return authMap;
     }
 
     public Map<String, Object> getCustomClaims() {
@@ -49,6 +56,7 @@ public class FireAuthToken extends AbstractAuthenticationToken {
     public Object getDetails() {
         return firebaseToken.getClaims();
     }
+
 
     @Override
     public boolean implies(Subject subject) {
