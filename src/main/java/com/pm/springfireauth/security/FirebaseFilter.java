@@ -15,18 +15,15 @@ import java.io.IOException;
 
 @Slf4j
 public class FirebaseFilter extends OncePerRequestFilter {
+    private final FireAuthManager fireAuthManager;
 
+    public FirebaseFilter(FireAuthManager fireAuthManager) {
 
-    private final FirebaseAuth firebaseAuth;
-
-
-    public FirebaseFilter(FirebaseAuth firebaseAuth) {
-        this.firebaseAuth = firebaseAuth;
+        this.fireAuthManager = fireAuthManager;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        FireAuthManager fireAuthManager = new FireAuthManager(firebaseAuth);
         Authentication authentication = fireAuthManager.authenticate(new FireAuthToken(extractToken(request)));
         if (authentication == null) {
             response.sendError(401);
