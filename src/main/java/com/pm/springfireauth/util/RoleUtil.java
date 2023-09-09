@@ -42,4 +42,23 @@ public class RoleUtil {
             return false;
         }
     }
+
+    public boolean removeRole(String role){
+        Map<String, Object> map = new HashMap<>();
+        FirebaseRole firebaseRole = new FirebaseRole(role);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(authentication.getAuthorities());
+        grantedAuthorities.add(firebaseRole);
+
+        map.put("role", grantedAuthorities);
+        Map<String, String> authMap = (Map<String, String>) authentication.getPrincipal();
+        try {
+            firebaseAuth.setCustomUserClaims(authMap.get("uid"), map);
+            return true;
+        } catch (FirebaseAuthException e) {
+            log.error("Error in removi role with cause : {}", e.getMessage());
+            return false;
+        }
+    }
 }
